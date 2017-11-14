@@ -52,16 +52,33 @@ useableBlocks = [
                     new BaseBlock(BlockID.STONE, 3),new BaseBlock(BlockID.STONE, 5),new BaseBlock(BlockID.STONE, 6),
                     new BaseBlock(BlockID.COBBLESTONE, 0),                                                                              //cobbelstone
                     new BaseBlock(BlockID.DIRT, 0)                                                                                      //dirt
-                    ];
+                    ]
                     
 finalBlocklist = [] //list of blocks that DO appear in the game
 
-hight = 14; //the amount of vertical memory fields. SHOULD be modified to fit the memory game
+hight = 4; //the amount of vertical memory fields. SHOULD be modified to fit the memory game
 wide = 7; //the amount of horizontal memory fields. SHOULD be modified to fit the memory game
 
 size = hight * wide; //CAN NOT BE BIGGER THAN 2 X usableBlocks.length OR ODD
 
-startVector = new Vector (10,10,0); //coordinates of the block to be set in one corner field (lowest left is practical). SHOULD be modified to fit the memory game
+startVector = new Vector (10,10,0); //coordinates of the block to be set in one corner field of the memory game. SHOULD be modified to fit the memory game
+
+/*SHOULD be modified to fit the memory game. relativ coordinates between starting vector and the next block postion in x,y and z direction (0 if no next block in that direction).
+  
+This is the geometrie of the memory game, in relativ (x,y,z) to the starting vector.
+If the coordinates of the block in the choosen corner lays on  (10,10,10), the next vertical block on (12,10,10)
+and the next horizontal block on (10,13,10), than this are the relativ coordinates: xRelCoord = 2, yRelCoord = 3, zRelCoord = 0.
+
+If the coordinates of the block in the choosen corner lays on  (10,10,10), the next vertical block on (10,10,7)
+and the next horizontal block on (10,15,10), than this are the relativ coordinates: xRelCoord = 0, yRelCoord = 5, zRelCoord = -3.
+
+*/
+xRelCoord = 3;
+yRelCoord = 4;
+zRelCoord = 0;
+
+
+session = context.remember(); //WorldEdit enviroment
 
 
 //LOGIC
@@ -73,11 +90,9 @@ for (in1 = 0; in1 < size/2; in1++){
     newInsert = useableBlocks[in1];
     finalBlocklist.push(newInsert);
     finalBlocklist.push(newInsert);
-};
+}
 
 shuffle(finalBlocklist); //randomizes the blocks
-
-session = context.remember(); //WorldEdit enviroment
 
 
 // Two loops loop over the entire board
@@ -86,20 +101,16 @@ for (in2 = 0; in2 < wide; in2++){
         
         block = finalBlocklist.pop(); //pops one block out of the list
         
-        vec = new Vector(in2 * 2,in3 * 3,0); /*This is the geometrie of the memory game, in relativ (x,y,z) to the starting vector
-                                                If the coordinates of the block in the choosen corner lays on  (10,10,10), the next vertical block on (12,10,10)
-                                                and the next horizontal block on (10,13,10), than this are the relativ coordinates: (in2 * 2, in3 * 3, in2 * 0).
-                                                
-                                                If the coordinates of the block in the choosen corner lays on  (10,10,10), the next vertical block on (10,10,7)
-                                                and the next horizontal block on (10,15,10), than this are the relativ coordinates: (in2 * 0, in3 * 5, in2 * -3).
-                                                
-                                                in2 * 0 reduces to 0.
-                                                */
+        if (yRelCoord) {   //decides between a vertical and a horizontal playing field
+            vec = new Vector(in2 * xRelCoord,in3 * yRelCoord,in2 *zRelCoord);
+        }else {
+            vec = new Vector(in2 * xRelCoord,0,in3 *zRelCoord)
+        }                                                   
         
         targetVector = startVector.add(vec); //the finale coodinates out of the starting vector and the relativ relation.
         session.setBlock(targetVector, block); //finally spawns the block.
         
-    };
-};
+    }
+}
 
 
