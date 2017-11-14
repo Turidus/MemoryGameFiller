@@ -61,7 +61,7 @@ wide = 7; //the amount of horizontal memory fields. SHOULD be modified to fit th
 
 size = hight * wide; //CAN NOT BE BIGGER THAN 2 X usableBlocks.length OR ODD
 
-startVector = new Vector (10,10,0); //coordinates of the block to be set in one corner field (lowest left is practical)
+startVector = new Vector (10,10,0); //coordinates of the block to be set in one corner field (lowest left is practical). SHOULD be modified to fit the memory game
 
 
 //LOGIC
