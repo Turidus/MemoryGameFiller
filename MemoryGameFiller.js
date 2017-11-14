@@ -16,7 +16,7 @@ importPackage(Packages.com.sk89q.worldedit.blocks);
 //FUNCTIONS
 
 //Function to shuffle an array. Taken from https://stackoverflow.com/a/12646864, user Laurens Holst. Thanks.
-function shuffleArray(array) {
+function shuffle(array) {
     for (var i = array.length - 1; i > 0; i--) {
         var j = Math.floor(Math.random() * (i + 1));
         var temp = array[i];
